@@ -1,14 +1,35 @@
 import React, { useState, useEffect } from "react";
 import ParticlesBg from "particles-bg";
 import { Dot } from 'react-animated-dots';
+import { Paper } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import HomePage from "./HomePage";
 import Game from "./Game";
+import Result from "./Result";
+
+
+const useStyles = makeStyles({
+  paper: {
+    width:'100vh', 
+    height:'85vh',
+    flexDirection:'column', 
+    display:'flex', 
+    fontFamily:'monospace', 
+  },
+  main: {
+    textAlign: '-webkit-center',
+    marginTop: '4%',
+  }
+});
 
 const Main = () => {
-
+  
+  const classes = useStyles();
+  
   const [questions, setQuestions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState('home');
+  const [score, setScore] = useState(0);
   
   useEffect(() => {
     const axios = require('axios');
@@ -37,9 +58,14 @@ const Main = () => {
       case('home'):
         return <HomePage setPage={() => setPage('play')} />;
       case('play'):
-        return <Game questions={questions} setPage={() => setPage()} />;
-      // case('result'):
-      //   return <Result setPage={() => setPage()} />;
+        return <Game 
+                  questions={questions} 
+                  score={score} 
+                  setScore={(val)=>setScore(val)} 
+                  setPage={(val)=>setPage(val)} 
+                />;
+      case('result'):
+        return <Result score={score} setPage={() => setPage()} />;
     }
   }
 
@@ -47,7 +73,7 @@ const Main = () => {
       loading ?
         <> 
           <ParticlesBg type='ball' num={2} bg={true} />
-          <div align='center' style={{marginTop: '30%'}}>
+          <div align='center' style={{fontFamily:'monospace', marginTop: '30%'}}>
             <h1>
               Loading 
               <Dot>.</Dot>
@@ -58,11 +84,14 @@ const Main = () => {
           </div>
         </>
       :
-        
-      <div>
-          {switchPage(page)}
-          {/* <ParticlesBg type="fountain" bg={true} num={1} /> */}
-        </div>
+
+      <div className={classes.main}>
+        <Paper elevation={24} className={classes.paper} style={{backgroundColor:'rgb(243 243 243)'}}>
+            {switchPage(page)}
+          </Paper>
+          <ParticlesBg type="fountain" bg={true} num={1} /> 
+      </div>
+      
     );
 }
 
