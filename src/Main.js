@@ -37,8 +37,8 @@ const Main = () => {
       try {
         const response = await axios.get("https://opentdb.com/api.php?amount=100&encode=url3986")      
         if(response.data.results){
-          let questions = response.data.results
-          setQuestions(questions);
+          let results = response.data.results
+          setQuestions(results);
           setLoading(false);
           return;
         }
@@ -64,8 +64,8 @@ const Main = () => {
                   setScore={(val)=>setScore(val)} 
                   setPage={(val)=>setPage(val)} 
                 />;
-      case('result'):
-        return <Result score={score} setPage={() => setPage()} />;
+      case('result'):       
+        return <Result score={score} />;
     }
   }
 
@@ -73,7 +73,7 @@ const Main = () => {
       loading ?
         <> 
           <ParticlesBg type='ball' num={2} bg={true} />
-          <div align='center' style={{fontFamily:'monospace', marginTop: '30%'}}>
+          <div align='center' style={{fontFamily:'monospace', marginTop: '25%'}}>
             <h1>
               Loading 
               <Dot>.</Dot>
@@ -85,7 +85,7 @@ const Main = () => {
         </>
       :
 
-      <div className={classes.main}>
+      <div align='center' className={classes.main}>
         <Paper elevation={24} className={classes.paper} style={{backgroundColor:'rgb(243 243 243)'}}>
             {switchPage(page)}
           </Paper>

@@ -11,6 +11,9 @@ const useStyles = makeStyles({
         opacity: 0,
         transition: 'opacity 1.5s ease;',
     },
+    main: {
+        pointerEvents: "none",
+    },
   });
 
 
@@ -26,6 +29,7 @@ const Game = (props) => {
     const [fadeProp, setFadeProp] = useState('fadeOut');
     const [hint, setHint] = useState(2);
     const [disabled, setDisabled] = useState();
+    const [pointerEvent, setPointerEvent] = useState(false);
 
     const [comment, setComment] = useState();
     const good_comments = ['WOW!', 'Keep it Going', 'So Smart!', 'Watch out Einstein!', 'Great!', 'You are the Best!'];
@@ -42,6 +46,7 @@ const Game = (props) => {
 
     // handle selecting answer
     const handleClick = (event, option) => {
+        setPointerEvent(true);
         if(option === props.questions[qNum].correct_answer){
             // correct, update score
             let count = 1; // streak doubles the score
@@ -83,7 +88,8 @@ const Game = (props) => {
         setTimeout(function (){
             setAnsColor('primary');
             setQNum(qNum + 1);
-        }, 1300);
+            setPointerEvent(false);
+        }, 1200);
     }
     
     // returns answers as buttons
@@ -99,7 +105,7 @@ const Game = (props) => {
                     <Button 
                         disabled={disabled.indexOf(option) === -1}
                         variant="contained"
-                        style={{backgroundColor: bgColor, margin:15}}
+                        style={{fontFamily:'monospace', backgroundColor: bgColor, margin:15}}
                         key={option+qNum}
                         onClick={(event)=>handleClick(event, option)}
                     >
@@ -110,7 +116,7 @@ const Game = (props) => {
         return options;
     }
 
-
+    // if player can use a hint -> disable 2 wrong answers
     const handleHint = () => {
         if (hint === 0 || disabled.length <= 2){
             return;
@@ -123,7 +129,7 @@ const Game = (props) => {
 
     return (
         
-        <div>
+        <div className={pointerEvent ? classes.main : false} >
             <Stack direction='row'  
                    justifyContent="center"
                    alignItems="center" 
@@ -137,19 +143,16 @@ const Game = (props) => {
                     <Fab
                         onClick={()=>handleHint()}
                         style={{color:'white', fontFamily:'monospace', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
+                        className={classes.hint}
                     >
                         50:50
                     </Fab> X {hint}
                 </div>
             </Stack>
-                <h2>
-                    Question {qNum + 1}</h2>
-                   <h3> Difficulty: {props.questions[qNum].difficulty[0].toUpperCase() + props.questions[qNum].difficulty.slice(1)}</h3>
-                    <br></br>
-                <div>
-                    <h2>{decodeURIComponent(props.questions[qNum].question)}</h2>
-                </div>
-
+                <h2>Question {qNum + 1}</h2>
+                <h3> Difficulty: {props.questions[qNum].difficulty[0].toUpperCase() + props.questions[qNum].difficulty.slice(1)}</h3>
+                <br></br>
+                <h2 style={{width:'70%'}}>{decodeURIComponent(props.questions[qNum].question)}</h2>
                 {getAnswers()}
                 <h2 className={classes[fadeProp]}>{comment}</h2>
 
