@@ -14,7 +14,7 @@ const Result = (props) => {
     const badResult = [einsteinLaugh, ohno, evilLaugh];
 
     const returnMeme = () => {
-        if(props.score >= 10){
+        if(props.score >= 15){
             return goodResult[Math.floor(Math.random()*goodResult.length)];
         }
         return badResult[Math.floor(Math.random()*badResult.length)];
