@@ -14,7 +14,7 @@ const Result = (props) => {
     const badResult = [einsteinLaugh, ohno, evilLaugh];
 
     const returnMeme = () => {
-        if(props.score >= 15){
+        if(props.score >= 20){
             return goodResult[Math.floor(Math.random()*goodResult.length)];
         }
         return badResult[Math.floor(Math.random()*badResult.length)];
@@ -23,7 +23,7 @@ const Result = (props) => {
     return (
         <div align='center'>
             <h1>Final Score: {props.score}</h1>
-            <img alt='loading...' src={returnMeme()}/>
+            <img style={{maxHeight:'70%'}} alt='loading...' src={returnMeme()}/>
             <div>
                 <Button variant='contained'
                         style={{margin:10,width:500, fontSize:20, 

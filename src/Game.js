@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Stack, Fab } from "@mui/material";
+import { Button, Stack, Fab, Tooltip, Zoom } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Timer from './Timer';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const useStyles = makeStyles({
     fadeIn: {
@@ -18,16 +19,18 @@ const useStyles = makeStyles({
 
 
 const Game = (props) => {
-    console.log(props.questions)
     
     const classes = useStyles();
 
     const [qNum, setQNum] = useState(0);
     const [ansColor, setAnsColor] = useState('primary');
     const [answers, setAnswers] = useState([]);
-    const [correct, setCorrect] = useState([false]);
+    const [correct] = useState([false]);
     const [fadeProp, setFadeProp] = useState('fadeOut');
-    const [hint, setHint] = useState(2);
+    const [hint50, set50Hint] = useState(2);
+    const [crowdHint, setCrowdHint] = useState(1);
+    const [crowdAns, setCrowdAns] = useState('');
+    const [fadeCrowdHint, setFadeCrowdHint] = useState('fadeOut');
     const [disabled, setDisabled] = useState();
     const [pointerEvent, setPointerEvent] = useState(false);
 
@@ -60,7 +63,7 @@ const Game = (props) => {
             setComment(good_comments[Math.floor(Math.random()*good_comments.length)]);
             setTimeout(()=>{
                 setFadeProp('fadeOut');
-            },1000)
+            }, 1000)
             let difficulty;
             switch(props.questions[qNum].difficulty){
                 case('easy'):
@@ -81,12 +84,13 @@ const Game = (props) => {
             setComment(bad_comments[Math.floor(Math.random()*bad_comments.length)]);
             setTimeout(()=>{
                 setFadeProp('fadeOut');
-            },1000)
+            }, 1000)
         }
         setAnsColor('limegreen');
 
         setTimeout(function (){
             setAnsColor('primary');
+            setFadeCrowdHint('fadeOut');
             setQNum(qNum + 1);
             setPointerEvent(false);
         }, 1200);
@@ -116,37 +120,67 @@ const Game = (props) => {
         return options;
     }
 
-    // if player can use a hint -> disable 2 wrong answers
-    const handleHint = () => {
-        if (hint === 0 || disabled.length <= 2){
+    // if player can use a 50:50 hint -> disable 2 wrong answers
+    const handle50Hint = () => {
+        if (hint50 === 0 || disabled.length <= 2){
             return;
         }
-        setHint(hint - 1);
+        set50Hint(hint50 - 1);
         disabled.splice(disabled.indexOf(props.questions[qNum].incorrect_answers[0]), 1);
         disabled.splice(disabled.indexOf(props.questions[qNum].incorrect_answers[1]), 1);
+    }
+
+    // if player can use this hint -> suggest an answer, 70% it'll suggest the correct one
+    const handleCrowdHint = () => {
+        if (crowdHint === 0){
+            return;
+        }
+        setFadeCrowdHint('fadeIn');
+        setCrowdHint(crowdHint - 1);
+        let random = Math.random();
+        if (random <= 0.7){ // give 70% for the 'audience' to pick the correct answer
+            //return correct answer
+            setCrowdAns(decodeURIComponent(props.questions[qNum].correct_answer));
+            return;
+        } 
+        // return one of the wrong answers
+        setCrowdAns(decodeURIComponent(props.questions[qNum].incorrect_answers[Math.floor(Math.random()*props.questions[qNum].incorrect_answers.length)]));
     }
 
 
     return (
         
-        <div className={pointerEvent ? classes.main : false} >
+        <div className={pointerEvent ? classes.main : undefined} >
             <Stack direction='row'  
                    justifyContent="center"
                    alignItems="center" 
                    spacing={15}>
-                <h2>
+                <h2 style={{width:'180px'}}>
                     Score: {props.score}
                 </h2>
                 <Timer setPage={(val) => props.setPage(val)} />
-                <div>
-                    <h2>Hint</h2>
-                    <Fab
-                        onClick={()=>handleHint()}
-                        style={{color:'white', fontFamily:'monospace', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
-                        className={classes.hint}
-                    >
-                        50:50
-                    </Fab> X {hint}
+                <div style={{width:'180px', justifyContent:'center', display:'grid'}}>
+                    <h2>Lifelines</h2>
+                    <Stack direction='row' spacing={2}>
+                        <div>
+                        <Tooltip TransitionComponent={Zoom} title="Eliminate 2 Wrong Answers">
+                            <Fab
+                                onClick={()=>handle50Hint()}
+                                style={{color:'white', fontFamily:'monospace', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
+                            >
+                                50:50
+                            </Fab></Tooltip>X{hint50}
+                        </div>
+                        <div>
+                            <Tooltip TransitionComponent={Zoom} title="Ask the Audience">
+                            <Fab
+                                onClick={()=>handleCrowdHint()}
+                                style={{color:'white', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
+                            >
+                                <GroupsIcon />
+                            </Fab></Tooltip>X{crowdHint}
+                        </div>
+                    </Stack>
                 </div>
             </Stack>
                 <h2>Question {qNum + 1}</h2>
@@ -155,11 +189,9 @@ const Game = (props) => {
                 <h2 style={{width:'70%'}}>{decodeURIComponent(props.questions[qNum].question)}</h2>
                 {getAnswers()}
                 <h2 className={classes[fadeProp]}>{comment}</h2>
-
-
+                <h2 className={classes[fadeCrowdHint]}>The crowd thinks the answer is: <span style={{color:'red'}}>{crowdAns}</span></h2>
         </div>
     );
-
 }
 
 export default Game;

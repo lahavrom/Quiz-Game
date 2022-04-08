@@ -10,8 +10,8 @@ import Result from "./Result";
 
 const useStyles = makeStyles({
   paper: {
-    width:'100vh', 
-    height:'85vh',
+    height: window.innerHeight*0.8,
+    width: window.innerWidth*0.55,
     flexDirection:'column', 
     display:'flex', 
     fontFamily:'monospace', 
@@ -73,7 +73,7 @@ const Main = () => {
       loading ?
         <> 
           <ParticlesBg type='ball' num={2} bg={true} />
-          <div align='center' style={{fontFamily:'monospace', marginTop: '25%'}}>
+          <div align='center' style={{fontFamily:'monospace', marginTop: '20%'}}>
             <h1>
               Loading 
               <Dot>.</Dot>
