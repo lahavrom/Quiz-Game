@@ -125,9 +125,9 @@ const Game = (props) => {
         if (hint50 === 0 || disabled.length <= 2){
             return;
         }
-        set50Hint(hint50 - 1);
         disabled.splice(disabled.indexOf(props.questions[qNum].incorrect_answers[0]), 1);
         disabled.splice(disabled.indexOf(props.questions[qNum].incorrect_answers[1]), 1);
+        set50Hint(hint50 - 1);
     }
 
     // if player can use this hint -> suggest an answer, 70% it'll suggest the correct one
@@ -144,7 +144,12 @@ const Game = (props) => {
             return;
         } 
         // return one of the wrong answers
-        setCrowdAns(decodeURIComponent(props.questions[qNum].incorrect_answers[Math.floor(Math.random()*props.questions[qNum].incorrect_answers.length)]));
+        let wrong = props.questions[qNum].incorrect_answers[Math.floor(Math.random()*props.questions[qNum].incorrect_answers.length)];
+        // if player used the 50:50 lifeline before, make sure the crowd can suggest the wrong answer that still can be selected
+        while (!disabled.includes(wrong)){ 
+            wrong = props.questions[qNum].incorrect_answers[Math.floor(Math.random()*props.questions[qNum].incorrect_answers.length)];
+        }
+        setCrowdAns(decodeURIComponent(wrong));
     }
 
 
@@ -161,22 +166,20 @@ const Game = (props) => {
                 <Timer setPage={(val) => props.setPage(val)} />
                 <div style={{width:'180px', justifyContent:'center', display:'grid'}}>
                     <h2>Lifelines</h2>
-                    <Stack direction='row' spacing={2}>
+                    <Stack direction='row' spacing={2} style={{fontWeight:'bold'}}>
                         <div>
                         <Tooltip TransitionComponent={Zoom} title="Eliminate 2 Wrong Answers">
                             <Fab
                                 onClick={()=>handle50Hint()}
-                                style={{color:'white', fontFamily:'monospace', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
-                            >
+                                style={{color:'white', fontFamily:'monospace', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}>
                                 50:50
                             </Fab></Tooltip>X{hint50}
                         </div>
                         <div>
-                            <Tooltip TransitionComponent={Zoom} title="Ask the Audience">
+                            <Tooltip TransitionComponent={Zoom} title="Ask the Audience (they can be wrong...)">
                             <Fab
                                 onClick={()=>handleCrowdHint()}
-                                style={{color:'white', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
-                            >
+                                style={{color:'white', background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}>
                                 <GroupsIcon />
                             </Fab></Tooltip>X{crowdHint}
                         </div>
