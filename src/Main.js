@@ -10,15 +10,14 @@ import Result from "./Result";
 
 const useStyles = makeStyles({
   paper: {
-    width:'100vh', 
-    height:'85vh',
+    height: '95vh',
+    width: '120vh',
     flexDirection:'column', 
     display:'flex', 
     fontFamily:'monospace', 
   },
   main: {
     textAlign: '-webkit-center',
-    marginTop: '4%',
   }
 });
 
@@ -44,7 +43,7 @@ const Main = () => {
         }
       } catch(error) {
           console.log(error);
-          alert("can't fetch questions, come back later...");
+          alert("Can't fetch questions right now, come back later...");
           getQuestions();
       }
     };
@@ -73,7 +72,7 @@ const Main = () => {
       loading ?
         <> 
           <ParticlesBg type='ball' num={2} bg={true} />
-          <div align='center' style={{fontFamily:'monospace', marginTop: '25%'}}>
+          <div align='center' style={{fontFamily:'monospace', marginTop: '20%'}}>
             <h1>
               Loading 
               <Dot>.</Dot>

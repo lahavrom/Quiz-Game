@@ -1,4 +1,4 @@
-import React, {} from 'react';
+import React from 'react';
 import einstein from './memes/einstein.jpg';
 import einsteinLaugh from './memes/einstein_laugh.jpg';
 import dicaprio from './memes/dicaprio.jpg';
@@ -14,7 +14,7 @@ const Result = (props) => {
     const badResult = [einsteinLaugh, ohno, evilLaugh];
 
     const returnMeme = () => {
-        if(props.score >= 15){
+        if(props.score >= 20){
             return goodResult[Math.floor(Math.random()*goodResult.length)];
         }
         return badResult[Math.floor(Math.random()*badResult.length)];
@@ -23,14 +23,13 @@ const Result = (props) => {
     return (
         <div align='center'>
             <h1>Final Score: {props.score}</h1>
-            <img alt='loading...' src={returnMeme()}/>
+            <img style={{maxHeight:'50%'}} alt='loading...' src={returnMeme()}/>
             <div>
                 <Button variant='contained'
-                        style={{margin:10,width:500, fontSize:20, 
+                        style={{width:500, fontSize:20, 
                                 fontFamily:'monospace', 
                                 background: 'linear-gradient(to right bottom, #430089, #82ffa1'}}
-                        onClick={()=>window.location.reload()}
-                >
+                        onClick={()=>window.location.reload()}>
                     Back to home page
                 </Button>
             </div>
