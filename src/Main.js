@@ -10,15 +10,14 @@ import Result from "./Result";
 
 const useStyles = makeStyles({
   paper: {
-    height: window.innerHeight*0.8,
-    width: window.innerWidth*0.55,
+    height: '95vh',
+    width: '120vh',
     flexDirection:'column', 
     display:'flex', 
     fontFamily:'monospace', 
   },
   main: {
     textAlign: '-webkit-center',
-    marginTop: '4%',
   }
 });
 
@@ -44,7 +43,7 @@ const Main = () => {
         }
       } catch(error) {
           console.log(error);
-          alert("can't fetch questions, come back later...");
+          alert("Can't fetch questions right now, come back later...");
           getQuestions();
       }
     };

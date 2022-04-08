@@ -49,7 +49,7 @@ const Game = (props) => {
 
     // handle selecting answer
     const handleClick = (event, option) => {
-        setPointerEvent(true);
+        setPointerEvent(true); // prevent double clicking
         if(option === props.questions[qNum].correct_answer){
             // correct, update score
             let count = 1; // streak doubles the score
@@ -185,7 +185,6 @@ const Game = (props) => {
             </Stack>
                 <h2>Question {qNum + 1}</h2>
                 <h3> Difficulty: {props.questions[qNum].difficulty[0].toUpperCase() + props.questions[qNum].difficulty.slice(1)}</h3>
-                <br></br>
                 <h2 style={{width:'70%'}}>{decodeURIComponent(props.questions[qNum].question)}</h2>
                 {getAnswers()}
                 <h2 className={classes[fadeProp]}>{comment}</h2>
